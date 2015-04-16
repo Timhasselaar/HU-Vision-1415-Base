@@ -1,19 +1,26 @@
 #include "RGBImageStudent.h"
 
 RGBImageStudent::RGBImageStudent() : RGBImage() {
-	int throwError = 0, e = 1 / throwError; //Throws error without the need to include a header
-	//TODO: Nothing
+	//int throwError = 0, e = 1 / throwError; //Throws error without the need to include a header
+	//(DONE) TODO: Nothing
 }
 
 RGBImageStudent::RGBImageStudent(const RGBImageStudent &other) : RGBImage(other.getWidth(), other.getHeight()) {
-	int throwError = 0, e = 1 / throwError;
+
+	int n_pixels = other.getWidth() * other.getHeight();
+	for (int i = 0; i < n_pixels; i++){
+
+	}
+	//int throwError = 0, e = 1 / throwError;
 	//TODO: Create a copy from the other object
 }
 
 
 RGBImageStudent::RGBImageStudent(const int width, const int height) : RGBImage(width, height) {
-	int throwError = 0, e = 1 / throwError;
-	//TODO: Initialize pixel storage
+	rgb_map = new RGB[width*height];
+
+	//int throwError = 0, e = 1 / throwError;
+	//(DONE) TODO: Initialize pixel storage
 }
 
 RGBImageStudent::~RGBImageStudent() {
