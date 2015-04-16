@@ -21,4 +21,6 @@ public:
 
 	Intensity getPixel(int x, int y) const;
 	Intensity getPixel(int i) const;
+private:
+	Intensity * intensity_map;
 };
