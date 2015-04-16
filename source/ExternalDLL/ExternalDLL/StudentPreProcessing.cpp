@@ -2,7 +2,7 @@
 #include "IntensityImageStudent.h"
 
 IntensityImage * StudentPreProcessing::stepToIntensityImage(const RGBImage &image) const {
-	IntensityImage * i_image = new IntensityImageStudent();
+	IntensityImage * i_image = new IntensityImageStudent(image.getWidth(), image.getHeight());
 	int n_pixels = image.getHeight() * image.getWidth();
 
 	for (int i = 0; i <= n_pixels; i++){
@@ -18,7 +18,7 @@ IntensityImage * StudentPreProcessing::stepToIntensityImage(const RGBImage &imag
 	}
 
 
-	return nullptr;
+	return i_image;
 }
 
 IntensityImage * StudentPreProcessing::stepScaleImage(const IntensityImage &image) const {
