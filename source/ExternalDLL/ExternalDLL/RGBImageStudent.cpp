@@ -55,7 +55,7 @@ void RGBImageStudent::set(const RGBImageStudent &other) {
 
 void RGBImageStudent::setPixel(int x, int y, RGB pixel) {
 	if (x < getWidth() && y < getHeight()){
-		rgb_map[y*getWidth()+x] = pixel;
+		rgb_map[y*getWidth() + x] = pixel;
 	}
 
 	//int throwError = 0, e = 1 / throwError;
@@ -94,7 +94,7 @@ void RGBImageStudent::setPixel(int i, RGB pixel) {
 
 RGB RGBImageStudent::getPixel(int x, int y) const {
 	if (x < getWidth() && y < getHeight()){
-		return rgb_map[y*getWidth()+x];
+		return rgb_map[y*getWidth() + x];
 	}
 	return 0;
 
