@@ -54,7 +54,7 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
          }
       }
       else {
-         if (result <= 0){
+         if (result <= 0.1){
             y_top_left_left_eye = i;
             break;
          }
