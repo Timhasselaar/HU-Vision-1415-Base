@@ -114,7 +114,7 @@ bool executeSteps(DLLExecution * executor) {
 		return false;
 	}
 
-	if (!executor->executeLocalizationStep5(false)) {
+	if (!executor->executeLocalizationStep5(true)) {
 		std::cout << "Localization step 5 failed!" << std::endl;
 		return false;
 	}
