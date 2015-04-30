@@ -38,6 +38,9 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
    int x_bottom_right_left_eye = bottom_nose_left.getPoints()[0].getX();
    int y_bottom_right_left_eye = bottom_nose_left.getPoints()[0].getY();
 
+   double IntensityEyeLocalizationStart = 0.3;
+   double IntensityEyeLocalizationEnd = 0.07;
+
    bool found = false;
    for (int i = y_bottom_right_left_eye; i > y_top_left_left_eye; i--){
       int intensity = 0;
@@ -48,13 +51,13 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
       }
       double result = (double)intensity / (double)(x_bottom_right_left_eye - x_top_left_left_eye);
       if (!found){
-         if (result >= 0.3){
+         if (result >= IntensityEyeLocalizationStart){
             y_bottom_right_left_eye = i;
             found = true;
          }
       }
       else {
-         if (result <= 0.1){
+         if (result <= IntensityEyeLocalizationEnd){
             y_top_left_left_eye = i;
             break;
          }
@@ -95,13 +98,13 @@ bool StudentLocalization::stepFindExactEyes(const IntensityImage &image, Feature
       }
       double result = (double)intensity / (double)(x_bottom_right_right_eye - x_top_left_right_eye);
       if (!found){
-         if (result >= 0.3){
+         if (result >= IntensityEyeLocalizationStart){
             y_bottom_right_right_eye = i;
             found = true;
          }
       }
       else {
-         if (result <= 0.1){
+         if (result <= IntensityEyeLocalizationEnd){
             y_top_left_right_eye = i;
             break;
          }
