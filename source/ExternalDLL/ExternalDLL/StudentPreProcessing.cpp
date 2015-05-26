@@ -29,7 +29,6 @@ IntensityImage * StudentPreProcessing::stepScaleImage(const IntensityImage &imag
 
 IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &image) const {
    IntensityImage * i_image = new IntensityImageStudent(image.getWidth(), image.getHeight());
-   int max = 0; int min = 0;
    int firstAndThirdThreeKernelLines[] = { 0, 0, 0, 1 ,1,1, 0, 0, 0 };
    int secondThreeKernelLines[] = { 1,1,1,-4,-4,-4,1,1,1 };
    for (int image_x = 0; image_x < image.getWidth(); image_x++){
@@ -51,10 +50,11 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
                else if (kernel_on_image_y >= image.getHeight()){ kernel_on_image_y = image.getHeight() - 1; }
                else{ kernel_on_image_y = image_y + kernel_y - 4; }
 
+               // kernel_y = 0, 1, 2 betekend de bovenste 3 regels van de kernel,
+               // kernel_y = 3, 4, 5 betekend de middelste 3 regels van de kernel,
+               // en kernely_y = 6, 7, 8 betekend weer de bovenste (gelijk aan de onderste) 3 regels van de kernel.
                if (kernel_y >= 3 && kernel_y <= 5){
-                  int ints = (int)image.getPixel(kernel_on_image_x, kernel_on_image_y);
-                  int nextints = ints * secondThreeKernelLines[kernel_x];
-                  total_intensity += nextints;
+                  total_intensity += (int)image.getPixel(kernel_on_image_x, kernel_on_image_y) * secondThreeKernelLines[kernel_x];
                }
                else{
                   total_intensity += (int)image.getPixel(kernel_on_image_x, kernel_on_image_y) * firstAndThirdThreeKernelLines[kernel_x];
@@ -62,35 +62,39 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
                //std::cout << kernel_on_image_x << ", " << kernel_on_image_y << " = " << total_intensity << "\n";
             }
          }
-         int new_intensity = 255 -(total_intensity/20 + 128);
+         // Het totaal van de waardes in de kernel is 36.
+         // Dus door de waarde te delen door 36 zul je altijd een resultaat tussen -255 en 255 krijgen.
+         int new_intensity = total_intensity;
 
-         /* Checking for the maximum and minimum values
-         if (new_intensity < min){
-            min = new_intensity;
-         }
-         if (new_intensity > max) {
-            max = new_intensity;
-         }
-         */
-
-         // quick thresholding, values obtained by testing
-         // TODO: Write test rapport on these values
-         if (new_intensity < 120){
+         // Uit de kernel komen waardes tussen de -2000 en 2000.
+         // Om dit af te vangen verhogen we alles onder de 0 naar 0,
+         // En verlagen we alles boven de 255 naar 255.
+         if (new_intensity < 0){
             new_intensity = 0;
          }
-         else if (new_intensity > 200){
-            new_intensity = 0;
-         }
-         else {
+         if (new_intensity > 255) {
             new_intensity = 255;
          }
          i_image->setPixel(image_x, image_y, new_intensity);
       }
    }
-   //std::cout << min << ", " << max;
    return i_image;
 }
 
 IntensityImage * StudentPreProcessing::stepThresholding(const IntensityImage &image) const {
-   return nullptr;
+   IntensityImage * i_image = new IntensityImageStudent(image.getWidth(), image.getHeight());
+   // After trying a few values, 220 gave the result closest to the original image.
+   const int threshhold = 220;
+   for (int image_x = 0; image_x < image.getWidth(); image_x++){
+      for (int image_y = 0; image_y < image.getHeight(); image_y++){
+         int intensity = image.getPixel(image_x, image_y);
+         if (intensity >= threshhold){
+            i_image->setPixel(image_x, image_y, 0);
+         }
+         else {
+            i_image->setPixel(image_x, image_y, 255);
+         }
+      }
+   }
+   return i_image;
 }
