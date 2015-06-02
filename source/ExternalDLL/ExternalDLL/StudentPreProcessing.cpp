@@ -73,7 +73,7 @@ IntensityImage * StudentPreProcessing::stepScaleImage(const IntensityImage &imag
             int C = image.getPixel(index + (int)old_width) & 0xff;
             int D = image.getPixel(index + (int)old_width + 1) & 0xff;
 
-            // De formule is: A ( 1 - w ) ( 1 - h ) + B * w * ( 1 - h ) + C * h * ( 1 - w ) + D * w * h;
+            // De formule is: A ( 1 - x ) ( 1 - y ) + B * x * ( 1 - y ) + C * x * ( 1 - y ) + D * x * y;
             int final_value = (int)(
                A * (1 - x_difference) * (1 - y_difference) +
                B * x_difference * (1 - y_difference) +

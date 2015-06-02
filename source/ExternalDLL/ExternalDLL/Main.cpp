@@ -29,7 +29,7 @@ int main(int argc, char * argv[]) {
 
 
 	RGBImage * input = ImageFactory::newRGBImage();
-	if (!ImageIO::loadImage("C:\\TestSetVision\\female-3.png", *input)) {
+	if (!ImageIO::loadImage("C:\\TestSetVision\\pasfoto_kleinb.png", *input)) {
 		std::cout << "Image could not be loaded!" << std::endl;
 		system("pause");
 		return 0;
@@ -69,7 +69,7 @@ bool executeSteps(DLLExecution * executor) {
 
 	//Execute the four Pre-processing steps
    bt->start();
-	if (!executor->executePreProcessingStep1(true)) { // Done by us
+	if (!executor->executePreProcessingStep1(false)) { // Done by us
 		std::cout << "Pre-processing step 1 failed!" << std::endl;
 		return false;
 	}
@@ -90,7 +90,7 @@ bool executeSteps(DLLExecution * executor) {
 
    bt->reset();
    bt->start();
-	if (!executor->executePreProcessingStep3(true)) { // Done by us
+	if (!executor->executePreProcessingStep3(false)) { // Done by us
 		std::cout << "Pre-processing step 3 failed!" << std::endl;
 		return false;
 	}
@@ -101,7 +101,7 @@ bool executeSteps(DLLExecution * executor) {
 
    bt->reset();
    bt->start();
-	if (!executor->executePreProcessingStep4(true)) { // Done by us
+	if (!executor->executePreProcessingStep4(false)) { // Done by us
 		std::cout << "Pre-processing step 4 failed!" << std::endl;
 		return false;
 	}
@@ -145,7 +145,7 @@ bool executeSteps(DLLExecution * executor) {
 
    bt->reset();
    bt->start();
-	if (!executor->executeLocalizationStep5(true)) { // Done by us
+	if (!executor->executeLocalizationStep5(false)) { // Done by us
 		std::cout << "Localization step 5 failed!" << std::endl;
 		return false;
    }
