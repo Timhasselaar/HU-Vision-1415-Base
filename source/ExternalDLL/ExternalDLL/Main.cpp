@@ -85,7 +85,7 @@ bool executeSteps(DLLExecution * executor) {
 	}
    ImageIO::saveIntensityImage(*executor->resultPreProcessingStep2, ImageIO::getDebugFileName("Pre-processing-2.png"));
    bt->stop();
-   std::cout << "Time for the scaling operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
+   std::cout << "\nTime for the scaling operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
 
 
    bt->reset();
