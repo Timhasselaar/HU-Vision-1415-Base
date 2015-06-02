@@ -2,6 +2,9 @@
 #include "IntensityImageStudent.h"
 #include <stdio.h>
 #include <iostream>
+//#include "basetimer.h"
+#include "ImageFactory.h"
+#include "ImageIO.h"
 
 IntensityImage * StudentPreProcessing::stepToIntensityImage(const RGBImage &image) const {
    IntensityImage * i_image = new IntensityImageStudent(image.getWidth(), image.getHeight());
@@ -24,13 +27,71 @@ IntensityImage * StudentPreProcessing::stepToIntensityImage(const RGBImage &imag
 }
 
 IntensityImage * StudentPreProcessing::stepScaleImage(const IntensityImage &image) const {
-   return nullptr;
+
+   double old_width = image.getWidth();
+   double old_height = image.getHeight();
+   double old_dimensions = old_width * old_height;
+
+   double max_width = 200;
+   double max_height = 200;
+   double max_marge = 1.25; // Hij mag iets groter uitvallen dan 200x200.
+   double max_dimension = max_width * max_height * max_marge;
+
+   IntensityImage * i_image = new IntensityImageStudent();
+
+   if (old_dimensions > max_dimension){
+      // Then resize the image
+      double rescale_ratio;
+      if (old_width > old_height){
+         rescale_ratio = (max_width * max_marge) / old_width;
+      }
+      else {
+         rescale_ratio = (max_height * max_marge) / old_height;
+      }
+
+      double new_width = old_width * rescale_ratio;
+      double new_height = old_height * rescale_ratio;
+      std::cout << new_width << " x " << new_height;
+      double new_dimension = new_width * new_height;
+
+      i_image->set((int)new_width, (int)new_height);
+
+      //Start scaling
+      for (int i = 0; i < new_height; i++){
+         for (int j = 0; j < new_width; j++){
+            int x, y;
+            double x_difference, y_difference;
+            int index;
+            x = (int)(j / rescale_ratio);
+            y = (int)(i / rescale_ratio);
+            x_difference = (j / rescale_ratio) - x;
+            y_difference = (i / rescale_ratio) - y;
+            index = y * (int)old_width + x;
+
+            int A = image.getPixel(index) & 0xff;
+            int B = image.getPixel(index + 1) & 0xff;
+            int C = image.getPixel(index + (int)old_width) & 0xff;
+            int D = image.getPixel(index + (int)old_width + 1) & 0xff;
+
+            // De formule is: A ( 1 - w ) ( 1 - h ) + B * w * ( 1 - h ) + C * h * ( 1 - w ) + D * w * h;
+            int final_value = (int)(
+               A * (1 - x_difference) * (1 - y_difference) +
+               B * x_difference * (1 - y_difference) +
+               C * y_difference * (1 - x_difference) +
+               D * x_difference * y_difference
+               );
+            i_image->setPixel(j, i, final_value);
+         }
+      }
+   }
+
+   return i_image;
 }
 
 IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &image) const {
    IntensityImage * i_image = new IntensityImageStudent(image.getWidth(), image.getHeight());
-   int firstAndThirdThreeKernelLines[] = { 0, 0, 0, 1 ,1,1, 0, 0, 0 };
-   int secondThreeKernelLines[] = { 1,1,1,-4,-4,-4,1,1,1 };
+   int firstAndThirdThreeKernelLines[] = { 0, 0, 0, 1, 1, 1, 0, 0, 0 };
+   int secondThreeKernelLines[] = { 1, 1, 1, -4, -4, -4, 1, 1, 1 };
    for (int image_x = 0; image_x < image.getWidth(); image_x++){
       for (int image_y = 0; image_y < image.getHeight(); image_y++){
          int total_intensity = 0;
@@ -84,7 +145,7 @@ IntensityImage * StudentPreProcessing::stepEdgeDetection(const IntensityImage &i
 IntensityImage * StudentPreProcessing::stepThresholding(const IntensityImage &image) const {
    IntensityImage * i_image = new IntensityImageStudent(image.getWidth(), image.getHeight());
    // After trying a few values, 220 gave the result closest to the original image.
-   const int threshhold = 220;
+   const int threshhold = 210;
    for (int image_x = 0; image_x < image.getWidth(); image_x++){
       for (int image_y = 0; image_y < image.getHeight(); image_y++){
          int intensity = image.getPixel(image_x, image_y);
