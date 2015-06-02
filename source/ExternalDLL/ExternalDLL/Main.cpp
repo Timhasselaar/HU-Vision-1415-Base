@@ -9,6 +9,7 @@
 #include "HereBeDragons.h"
 #include "ImageFactory.h"
 #include "DLLExecution.h"
+#include "basetimer.h"
 
 void drawFeatureDebugImage(IntensityImage &image, FeatureMap &features);
 bool executeSteps(DLLExecution * executor);
@@ -64,62 +65,93 @@ int main(int argc, char * argv[]) {
 
 bool executeSteps(DLLExecution * executor) {
 
+   BaseTimer* bt = new BaseTimer();
+
 	//Execute the four Pre-processing steps
+   bt->start();
 	if (!executor->executePreProcessingStep1(true)) { // Done by us
 		std::cout << "Pre-processing step 1 failed!" << std::endl;
 		return false;
 	}
+   bt->stop();
+   std::cout << "Time for the grayscaling operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
 
+
+   bt->reset();
+   bt->start();
 	if (!executor->executePreProcessingStep2(true)) { // Done by us
 		std::cout << "Pre-processing step 2 failed!" << std::endl;
 		return false;
 	}
-	ImageIO::saveIntensityImage(*executor->resultPreProcessingStep2, ImageIO::getDebugFileName("Pre-processing-2.png"));
+   ImageIO::saveIntensityImage(*executor->resultPreProcessingStep2, ImageIO::getDebugFileName("Pre-processing-2.png"));
+   bt->stop();
+   std::cout << "Time for the scaling operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
 
+
+   bt->reset();
+   bt->start();
 	if (!executor->executePreProcessingStep3(true)) { // Done by us
 		std::cout << "Pre-processing step 3 failed!" << std::endl;
 		return false;
 	}
-	ImageIO::saveIntensityImage(*executor->resultPreProcessingStep3, ImageIO::getDebugFileName("Pre-processing-3.png"));
+   ImageIO::saveIntensityImage(*executor->resultPreProcessingStep3, ImageIO::getDebugFileName("Pre-processing-3.png"));
+   bt->stop();
+   std::cout << "Time for the edging operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
 
+
+   bt->reset();
+   bt->start();
 	if (!executor->executePreProcessingStep4(true)) { // Done by us
 		std::cout << "Pre-processing step 4 failed!" << std::endl;
 		return false;
 	}
-	ImageIO::saveIntensityImage(*executor->resultPreProcessingStep4, ImageIO::getDebugFileName("Pre-processing-4.png"));
+   ImageIO::saveIntensityImage(*executor->resultPreProcessingStep4, ImageIO::getDebugFileName("Pre-processing-4.png"));
+   bt->stop();
+   std::cout << "Time for the thresholding operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
 
 
 
-	//Execute the localization steps
+
+   //Execute the localization steps
 	if (!executor->prepareLocalization()) {
 		std::cout << "Localization preparation failed!" << std::endl;
 		return false;
-	}
+   }
+
+
 
 	if (!executor->executeLocalizationStep1(false)) {
 		std::cout << "Localization step 1 failed!" << std::endl;
 		return false;
-	}
+   }
+
 
 	if (!executor->executeLocalizationStep2(false)) {
 		std::cout << "Localization step 2 failed!" << std::endl;
 		return false;
-	}
+   }
+
 
 	if (!executor->executeLocalizationStep3(false)) {
 		std::cout << "Localization step 3 failed!" << std::endl;
 		return false;
-	}
+   }
+
 
 	if (!executor->executeLocalizationStep4(false)) {
 		std::cout << "Localization step 4 failed!" << std::endl;
 		return false;
-	}
+   }
 
+   bt->reset();
+   bt->start();
 	if (!executor->executeLocalizationStep5(true)) { // Done by us
 		std::cout << "Localization step 5 failed!" << std::endl;
 		return false;
-	}
+   }
+   bt->stop();
+   std::cout << "Time for the eye finding operation was: " << bt->elapsedSeconds() << " seconds." << std::endl;
+
 
 
 
@@ -127,22 +159,25 @@ bool executeSteps(DLLExecution * executor) {
 	if (!executor->prepareExtraction()) {
 		std::cout << "Extraction preparation failed!" << std::endl;
 		return false;
-	}
+   }
+
 
 	if (!executor->executeExtractionStep1(false)) {
 		std::cout << "Extraction step 1 failed!" << std::endl;
 		return false;
-	}
+   }
+
 
 	if (!executor->executeExtractionStep2(false)) {
 		std::cout << "Extraction step 2 failed!" << std::endl;
 		return false;
-	}
+   }
+
 
 	if (!executor->executeExtractionStep3(false)) {
 		std::cout << "Extraction step 3 failed!" << std::endl;
 		return false;
-	}
+   }
 
 
 	//Post processing and representation
